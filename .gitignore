@@ -1,0 +1,14 @@
+.gradle/
+/.idea/caches/
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/.idea/androidTestResultsUserPreferences.xml
+/.idea/deploymentTargetSelector.xml
+/.idea/vcs.xml
+/app/build/
+ExampleUnitTest.kt
+ExampleInstrumentedTest.kt
+local.properties
+*.tmp
