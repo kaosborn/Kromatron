@@ -1,0 +1,142 @@
+package kaosborn.kromatron.ui
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+@Composable
+fun MainScreen (vm:GridGameViewModel=viewModel()) {
+    Column (modifier = Modifier
+            .safeDrawingPadding()
+            .padding(top=12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+
+        Header (Modifier, score=vm.score, moves=vm.moves, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isMonochrome, onReset = { vm.resetGame() })
+
+        Column (modifier=Modifier, verticalArrangement=Arrangement.spacedBy(4.dp)) {
+            vm.board.forEach { row ->
+                Row (modifier=Modifier, horizontalArrangement=Arrangement.spacedBy(4.dp)) {
+                    row.forEach { colorIx ->
+                        Text (modifier = Modifier
+                                .background(vm.palette[colorIx])
+                                .size(56.dp),
+                            textAlign = TextAlign.Center,
+                            text = " ")
+                    }
+                }
+            }
+        }
+
+        Row (modifier=Modifier, verticalAlignment=Alignment.CenterVertically) {
+            for (i in 0..<vm.palette.size) {
+                PaletteButton (Modifier, vm.palette[i], vm.isMonochrome || vm.at(0,0)==i) {
+                    vm.pushMove (i)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Header (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMoves:Int?, isGameOver:Boolean, onReset:() -> Unit) {
+    Column (modifier, verticalArrangement=Arrangement.spacedBy(8.dp)) {
+        Row (Modifier.fillMaxWidth()) {
+            Box (Modifier.weight(1f), contentAlignment=Alignment.CenterEnd) {
+                Text (modifier = Modifier
+                    .clip(RoundedCornerShape(topStart=8.dp,bottomStart=8.dp))
+                    .background(colorScheme.secondary).padding(start=8.dp),
+                    fontSize=20.sp, textAlign=TextAlign.Center, text="Score")
+            }
+            Box (Modifier.weight(1f)) {
+                Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
+                    Text (modifier=Modifier.padding(end=8.dp), fontSize=20.sp, text=": $score")
+                }
+            }
+        }
+
+        Row (Modifier.fillMaxWidth()) {
+            Box (Modifier.weight(1f), contentAlignment=Alignment.CenterEnd) {
+                Text (modifier = Modifier
+                    .clip(RoundedCornerShape(topStart=8.dp, bottomStart=8.dp))
+                    .background(colorScheme.secondary).padding(start=8.dp),
+                    fontSize=20.sp, textAlign=TextAlign.Center, text="High Score")
+            }
+            Box (Modifier.weight(1f)) {
+                Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
+                    Text (modifier=Modifier.padding(end=8.dp), fontSize=20.sp, text=": $hiScore")
+                }
+            }
+        }
+
+        Row (Modifier.fillMaxWidth()) {
+            Box (Modifier.weight(1f), contentAlignment=Alignment.CenterEnd) {
+                Text (modifier = Modifier
+                    .clip(RoundedCornerShape(topStart=8.dp, bottomStart=8.dp))
+                    .background(colorScheme.secondary).padding(start=8.dp),
+                    fontSize=20.sp, textAlign=TextAlign.Center, text="Moves")
+            }
+            Box (Modifier.weight(1f)) {
+                Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
+                    Text (modifier=Modifier.padding(end=8.dp), fontSize=20.sp, text=": $moves")
+                }
+            }
+        }
+
+        Row (Modifier.fillMaxWidth()) {
+            Box (Modifier.weight(1f), contentAlignment=Alignment.CenterEnd) {
+                Text (modifier = Modifier
+                    .clip(RoundedCornerShape(topStart=8.dp, bottomStart=8.dp))
+                    .background(colorScheme.secondary).padding(start=8.dp),
+                    fontSize=20.sp, textAlign=TextAlign.Center, text="Low Moves")
+            }
+            Box (Modifier.weight(1f)) {
+                Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
+                    Text (modifier=Modifier.padding(end=8.dp), fontSize=20.sp, text=if (loMoves==null) ": -" else ": $loMoves")
+                }
+            }
+        }
+
+        Row (Modifier.fillMaxWidth(), horizontalArrangement=Arrangement.Center) {
+            Button (onClick=onReset) {
+                Text (modifier=Modifier,
+                    text = if (isGameOver) "Play Again" else "Reset",
+                    fontSize=24.sp)
+            }
+        }
+    }
+}
+
+@Composable
+fun PaletteButton (modifier:Modifier=Modifier, buttonColor:Color, isSelected:Boolean, onSelect:() -> Unit) {
+    Box (modifier=modifier.height(60.dp), contentAlignment=Alignment.Center) {
+        Button (modifier = Modifier
+            .height(if (isSelected) 30.dp else 60.dp)
+            .width(60.dp),
+            enabled = ! isSelected,
+            colors = ButtonDefaults.buttonColors(containerColor=buttonColor, disabledContainerColor=buttonColor),
+            onClick = onSelect
+        ) { }
+    }
+}
