@@ -14,7 +14,6 @@ class GridGame() {
 
     val palette:List<Color> get() = _palette
     val board:List<List<Int>> get() = _board
-    fun at (x:Int,y:Int) = _board[y][x]
     val isConstant get() = maxEnum==area
 
     constructor (xSize:Int, ySize:Int, colors:Array<Color>) : this() {

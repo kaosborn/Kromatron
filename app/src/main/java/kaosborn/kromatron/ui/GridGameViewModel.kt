@@ -22,7 +22,6 @@ class GridGameViewModel() : ViewModel() {
     val palette:List<Color> get() = grid.palette
     val board:List<List<Int>> get() = grid.board
     val isMonochrome:Boolean get() = grid.isConstant
-    fun at(x:Int,y:Int) = grid.at(x,y)
 
     fun resetGame() {
         grid.reset()

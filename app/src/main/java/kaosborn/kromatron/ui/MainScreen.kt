@@ -51,7 +51,7 @@ fun MainScreen (vm:GridGameViewModel=viewModel()) {
 
         Row (modifier=Modifier, verticalAlignment=Alignment.CenterVertically) {
             for (i in 0..<vm.palette.size) {
-                PaletteButton (Modifier, vm.palette[i], vm.isMonochrome || vm.at(0,0)==i) {
+                PaletteButton (Modifier, vm.palette[i], vm.isMonochrome || vm.board[0][0]==i) {
                     vm.pushMove (i)
                 }
             }
