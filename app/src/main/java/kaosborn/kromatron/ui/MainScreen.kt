@@ -20,13 +20,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
+fun getAppWidth(): Dp {
+    val windowWidth = LocalWindowInfo.current.containerSize.width
+    with<Density,Unit>(receiver = LocalDensity.current) {
+        return windowWidth.toDp()
+    }
+}
+
+@Composable
 fun MainScreen (vm:GridGameViewModel=viewModel()) {
+    val boardWindowWidth = getAppWidth() - 4.dp
+    var space = 0.dp
+    var sizePerCell:Dp = boardWindowWidth / vm.xSize
+    if (sizePerCell>=20.dp)
+        if (sizePerCell<60.dp) {
+            space = 2.dp
+            sizePerCell = (boardWindowWidth - space * vm.xSize) / vm.xSize
+        }
+        else {
+            space = 4.dp
+            sizePerCell = 56.dp
+        }
+
     Column (modifier = Modifier
             .safeDrawingPadding()
             .padding(top=12.dp),
@@ -35,13 +60,13 @@ fun MainScreen (vm:GridGameViewModel=viewModel()) {
 
         Header (Modifier, score=vm.score, moves=vm.moves, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isMonochrome, onReset = { vm.resetGame() })
 
-        Column (modifier=Modifier, verticalArrangement=Arrangement.spacedBy(4.dp)) {
+        Column (modifier=Modifier, verticalArrangement=Arrangement.spacedBy(space)) {
             vm.board.forEach { row ->
-                Row (modifier=Modifier, horizontalArrangement=Arrangement.spacedBy(4.dp)) {
+                Row (modifier=Modifier, horizontalArrangement=Arrangement.spacedBy(space)) {
                     row.forEach { colorIx ->
                         Text (modifier = Modifier
                                 .background(vm.palette[colorIx])
-                                .size(56.dp),
+                                .size(sizePerCell),
                             textAlign = TextAlign.Center,
                             text = " ")
                     }
