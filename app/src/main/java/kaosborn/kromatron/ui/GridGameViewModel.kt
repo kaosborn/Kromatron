@@ -33,7 +33,7 @@ class GridGameViewModel() : ViewModel() {
 
     fun pushMove (replacementColor:Int) {
         moves++
-        addPoints (grid.flood4 (0,0,replacementColor))
+        addPoints (grid.flood4(replacementColor))
     }
 
     private fun addPoints (expansion:Int) {
