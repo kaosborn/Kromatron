@@ -1,4 +1,5 @@
 .gradle/
+/.idea/.name
 /.idea/caches/
 /.idea/inspectionProfiles/
 /.idea/modules.xml
@@ -11,6 +12,7 @@
 /.idea/vcs.xml
 /.kotlin/
 /app/build/
+/build/
 ExampleUnitTest.kt
 ExampleInstrumentedTest.kt
 local.properties
