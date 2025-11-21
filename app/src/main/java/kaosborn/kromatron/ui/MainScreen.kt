@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -92,11 +93,11 @@ fun Header (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMov
                 Text (modifier = Modifier
                     .clip(RoundedCornerShape(topStart=8.dp,bottomStart=8.dp))
                     .background(colorScheme.secondary).padding(start=8.dp),
-                    fontSize=20.sp, textAlign=TextAlign.Center, text="Score")
+                    style=typography.headlineMedium, textAlign=TextAlign.Center, text="Score")
             }
             Box (Modifier.weight(1f)) {
                 Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
-                    Text (modifier=Modifier.padding(end=8.dp), fontSize=20.sp, text=": $score")
+                    Text (modifier=Modifier.padding(end=8.dp), style=typography.headlineMedium, text=": $score")
                 }
             }
         }
@@ -106,11 +107,11 @@ fun Header (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMov
                 Text (modifier = Modifier
                     .clip(RoundedCornerShape(topStart=8.dp, bottomStart=8.dp))
                     .background(colorScheme.secondary).padding(start=8.dp),
-                    fontSize=20.sp, textAlign=TextAlign.Center, text="High Score")
+                    style=typography.headlineSmall, textAlign=TextAlign.Center, text="High Score")
             }
             Box (Modifier.weight(1f)) {
                 Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
-                    Text (modifier=Modifier.padding(end=8.dp), fontSize=20.sp, text=": $hiScore")
+                    Text (modifier=Modifier.padding(end=8.dp), style=typography.headlineSmall, text=": $hiScore")
                 }
             }
         }
@@ -120,11 +121,11 @@ fun Header (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMov
                 Text (modifier = Modifier
                     .clip(RoundedCornerShape(topStart=8.dp, bottomStart=8.dp))
                     .background(colorScheme.secondary).padding(start=8.dp),
-                    fontSize=20.sp, textAlign=TextAlign.Center, text="Moves")
+                    style=typography.headlineMedium, textAlign=TextAlign.Center, text="Moves")
             }
             Box (Modifier.weight(1f)) {
                 Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
-                    Text (modifier=Modifier.padding(end=8.dp), fontSize=20.sp, text=": $moves")
+                    Text (modifier=Modifier.padding(end=8.dp), style=typography.headlineMedium, text=": $moves")
                 }
             }
         }
@@ -134,11 +135,11 @@ fun Header (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMov
                 Text (modifier = Modifier
                     .clip(RoundedCornerShape(topStart=8.dp, bottomStart=8.dp))
                     .background(colorScheme.secondary).padding(start=8.dp),
-                    fontSize=20.sp, textAlign=TextAlign.Center, text="Low Moves")
+                    style=typography.headlineSmall, textAlign=TextAlign.Center, text="Low Moves")
             }
             Box (Modifier.weight(1f)) {
                 Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
-                    Text (modifier=Modifier.padding(end=8.dp), fontSize=20.sp, text=if (loMoves==null) ": -" else ": $loMoves")
+                    Text (modifier=Modifier.padding(end=8.dp), style=typography.headlineSmall, text=if (loMoves==null) ": -" else ": $loMoves")
                 }
             }
         }
@@ -147,7 +148,7 @@ fun Header (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMov
             Button (onClick=onReset) {
                 Text (modifier=Modifier,
                     text = if (isGameOver) "Play Again" else "Reset",
-                    fontSize=24.sp)
+                    style=typography.headlineLarge)
             }
         }
     }
@@ -161,7 +162,7 @@ fun PaletteButton (modifier:Modifier=Modifier, buttonColor:Color, isSelected:Boo
             .width(60.dp),
             enabled = ! isSelected,
             colors = ButtonDefaults.buttonColors(containerColor=buttonColor, disabledContainerColor=buttonColor),
-            onClick = onSelect
-        ) { }
+            onClick = onSelect) {
+        }
     }
 }

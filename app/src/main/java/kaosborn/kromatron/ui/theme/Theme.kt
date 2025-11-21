@@ -26,13 +26,16 @@ private val LightColorScheme = lightColorScheme(
     primary = Plum,
     onPrimary = Black,
     secondary = LightGray,
-    onSecondary = Blue
+    onSecondary = Blue,
+    tertiary = Yellow,
+    onTertiary = Red
 )
 
 @Composable
 fun KromatronTheme (darkTheme:Boolean=isSystemInDarkTheme(), content:@Composable () -> Unit) {
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
+        typography = Typography,
         content = content
     )
 }
