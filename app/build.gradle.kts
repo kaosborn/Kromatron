@@ -13,7 +13,7 @@ android {
         applicationId = "kaosborn.kromatron"
         minSdk = 27
         targetSdk = 36
-        versionCode = 2
+        versionCode = 3
         versionName = "2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -47,7 +47,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation(libs.androidx.material3)
+    implementation("androidx.compose.material:material-icons-core")
+    implementation("androidx.annotation:annotation:1.9.1")
     testImplementation(libs.junit)
     testImplementation(kotlin("test"))
     androidTestImplementation(libs.androidx.junit)

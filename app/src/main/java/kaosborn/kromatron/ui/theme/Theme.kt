@@ -7,13 +7,13 @@ import androidx.compose.runtime.Composable
 
 private val DarkColorScheme = darkColorScheme(
     surface = Olive,
-    onSurface = Black,
-    background = Red,
-    onBackground = Green,
+    onSurface = Gold,
+    background = BlackForext,
+    onBackground = Orchid,
     primary = Tomato,
     onPrimary = Black,
-    secondary = LightGrayCool,
-    onSecondary = Magenta,
+    secondary = BrightGray,
+    onSecondary = Fuscia,
     tertiary = Yellow,
     onTertiary = Red
 )
@@ -21,8 +21,8 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     surface = Gold4,
     onSurface = Black,
-    background = Red,
-    onBackground = Green,
+    background = Silver,
+    onBackground = Indigo,
     primary = Plum,
     onPrimary = Black,
     secondary = LightGray,

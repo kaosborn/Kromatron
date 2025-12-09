@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,8 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.MutableState
 
 @Composable
 fun getAppWidth(): Dp {
@@ -39,7 +37,7 @@ fun getAppWidth(): Dp {
 }
 
 @Composable
-fun MainScreen (vm:GridGameViewModel=viewModel()) {
+fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
     val boardWindowWidth = getAppWidth() - 4.dp
     var space = 0.dp
     var sizePerCell:Dp = boardWindowWidth / vm.xSize
@@ -53,11 +51,16 @@ fun MainScreen (vm:GridGameViewModel=viewModel()) {
             sizePerCell = 56.dp
         }
 
-    Column (modifier = Modifier
-            .safeDrawingPadding()
-            .padding(top=12.dp),
+    Column(
+        modifier = Modifier.padding(top=8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
+
+        if (showSettings.value)
+            SettingsDialog(
+                vals = Settings (vm.xSize,vm.palette.size,vm.baseColors.size),
+                onConfirm = { v -> showSettings.value = false; vm.resetGame (v) },
+                onDismiss = { showSettings.value = false })
 
         Header (Modifier, score=vm.score, moves=vm.moves, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isMonochrome, onReset = { vm.resetGame() })
 
