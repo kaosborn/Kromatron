@@ -18,13 +18,14 @@ class GridGameTests {
 
     @Test
     fun emptyHasColors() {
-        val colors2 = arrayOf(Color.Red,Color.Blue)
+        val colors2:Array<Color> = arrayOf(Color.Red,Color.Blue)
         val gg = GridGame (0,0,colors2)
         assertEquals (0, gg.xSize)
         assertEquals (0, gg.ySize)
         assertEquals ("", gg.toString())
         assertTrue (gg.isConstant)
     }
+
     @Test
     fun noWidth() {
         val colors2 = arrayOf(Color.Red,Color.Blue)

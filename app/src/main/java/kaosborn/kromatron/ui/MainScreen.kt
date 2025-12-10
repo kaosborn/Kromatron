@@ -52,10 +52,10 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
         }
 
     Column(
-        modifier = Modifier.padding(top=8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-
+        modifier = Modifier.padding (top=8.dp),
+        verticalArrangement = Arrangement.spacedBy (8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         if (showSettings.value)
             SettingsDialog(
                 vals = Settings (vm.xSize,vm.palette.size,vm.baseColors.size),
@@ -78,9 +78,16 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
             }
         }
 
-        Row (modifier=Modifier, verticalAlignment=Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             for (i in 0..<vm.palette.size) {
-                PaletteButton (Modifier, vm.palette[i], vm.isMonochrome || vm.board[0][0]==i) {
+                PaletteButton(
+                    modifier = Modifier,
+                    buttonColor = vm.palette[i],
+                    isSelected = vm.isMonochrome || vm.board[0][0]==i
+                ) {
                     vm.pushMove (i)
                 }
             }
@@ -90,68 +97,136 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
 
 @Composable
 fun Header (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMoves:Int?, isGameOver:Boolean, onReset:() -> Unit) {
-    Column (modifier, verticalArrangement=Arrangement.spacedBy(8.dp)) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy (8.dp)
+    ) {
         Row (Modifier.fillMaxWidth()) {
-            Box (Modifier.weight(1f), contentAlignment=Alignment.CenterEnd) {
-                Text (modifier = Modifier
-                    .clip(RoundedCornerShape(topStart=8.dp,bottomStart=8.dp))
-                    .background(colorScheme.secondary).padding(start=8.dp),
-                    style=typography.headlineMedium, textAlign=TextAlign.Center, text="Score")
+            Box(
+                modifier = Modifier.weight (1f),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Text(
+                    text = "Score",
+                    modifier = Modifier
+                        .clip (RoundedCornerShape (topStart=8.dp, bottomStart=8.dp))
+                        .background (colorScheme.secondary)
+                        .padding (start=8.dp),
+                    textAlign = TextAlign.Center,
+                    style = typography.headlineMedium
+                )
             }
             Box (Modifier.weight(1f)) {
-                Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
-                    Text (modifier=Modifier.padding(end=8.dp), style=typography.headlineMedium, text=": $score")
+                Row (
+                    modifier = Modifier
+                        .clip (RoundedCornerShape (topEnd=8.dp, bottomEnd=8.dp))
+                        .background (colorScheme.secondary)
+                ) {
+                    Text(
+                        text = ": $score",
+                        modifier = Modifier.padding (end=8.dp),
+                        style = typography.headlineMedium
+                    )
                 }
             }
         }
 
         Row (Modifier.fillMaxWidth()) {
-            Box (Modifier.weight(1f), contentAlignment=Alignment.CenterEnd) {
-                Text (modifier = Modifier
-                    .clip(RoundedCornerShape(topStart=8.dp, bottomStart=8.dp))
-                    .background(colorScheme.secondary).padding(start=8.dp),
-                    style=typography.headlineSmall, textAlign=TextAlign.Center, text="High Score")
+            Box(
+                modifier = Modifier.weight (1f),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Text(
+                    text = "High Score",
+                    modifier = Modifier
+                        .clip (RoundedCornerShape (topStart=8.dp, bottomStart=8.dp))
+                        .background (colorScheme.secondary)
+                        .padding (start=8.dp),
+                    textAlign = TextAlign.Center,
+                    style = typography.headlineSmall
+                )
             }
             Box (Modifier.weight(1f)) {
-                Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
-                    Text (modifier=Modifier.padding(end=8.dp), style=typography.headlineSmall, text=": $hiScore")
+                Row(
+                    modifier = Modifier
+                        .clip (RoundedCornerShape (topEnd=8.dp, bottomEnd=8.dp))
+                        .background (colorScheme.secondary)
+                ) {
+                    Text(
+                        text = ": $hiScore",
+                        modifier = Modifier.padding (end=8.dp),
+                        style = typography.headlineSmall
+                    )
                 }
             }
         }
 
         Row (Modifier.fillMaxWidth()) {
-            Box (Modifier.weight(1f), contentAlignment=Alignment.CenterEnd) {
-                Text (modifier = Modifier
-                    .clip(RoundedCornerShape(topStart=8.dp, bottomStart=8.dp))
-                    .background(colorScheme.secondary).padding(start=8.dp),
-                    style=typography.headlineMedium, textAlign=TextAlign.Center, text="Moves")
+            Box(
+                modifier = Modifier.weight (1f),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Text (
+                    text = "Moves",
+                    modifier = Modifier
+                        .clip (RoundedCornerShape (topStart=8.dp, bottomStart=8.dp))
+                        .background (colorScheme.secondary)
+                        .padding (start=8.dp),
+                    textAlign = TextAlign.Center,
+                    style = typography.headlineMedium
+                )
             }
             Box (Modifier.weight(1f)) {
-                Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
-                    Text (modifier=Modifier.padding(end=8.dp), style=typography.headlineMedium, text=": $moves")
+                Row(
+                    modifier = Modifier
+                        .clip (RoundedCornerShape (topEnd=8.dp, bottomEnd=8.dp))
+                        .background (colorScheme.secondary)
+                ) {
+                    Text(
+                        text = ": $moves",
+                        modifier = Modifier.padding (end=8.dp),
+                        style = typography.headlineMedium
+                    )
                 }
             }
         }
 
         Row (Modifier.fillMaxWidth()) {
-            Box (Modifier.weight(1f), contentAlignment=Alignment.CenterEnd) {
-                Text (modifier = Modifier
-                    .clip(RoundedCornerShape(topStart=8.dp, bottomStart=8.dp))
-                    .background(colorScheme.secondary).padding(start=8.dp),
-                    style=typography.headlineSmall, textAlign=TextAlign.Center, text="Low Moves")
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Text(
+                    text = "Low Moves",
+                    modifier = Modifier
+                        .clip (RoundedCornerShape (topStart=8.dp, bottomStart=8.dp))
+                        .background (colorScheme.secondary)
+                        .padding (start=8.dp),
+                    textAlign = TextAlign.Center,
+                    style = typography.headlineSmall
+                )
             }
             Box (Modifier.weight(1f)) {
-                Row (Modifier.clip(RoundedCornerShape(topEnd=8.dp, bottomEnd=8.dp)).background(colorScheme.secondary)) {
-                    Text (modifier=Modifier.padding(end=8.dp), style=typography.headlineSmall, text=if (loMoves==null) ": -" else ": $loMoves")
+                Row(
+                    modifier = Modifier
+                        .clip (RoundedCornerShape (topEnd=8.dp, bottomEnd=8.dp))
+                        .background (colorScheme.secondary)
+                ) {
+                    Text(
+                        text = if (loMoves==null) ": -" else ": $loMoves",
+                        modifier = Modifier.padding (end=8.dp),
+                        style = typography.headlineSmall
+                    )
                 }
             }
         }
 
-        Row (Modifier.fillMaxWidth(), horizontalArrangement=Arrangement.Center) {
+        Row (modifier=Modifier.fillMaxWidth(), horizontalArrangement=Arrangement.Center) {
             Button (onClick=onReset) {
-                Text (modifier=Modifier,
+                Text(
                     text = if (isGameOver) "Play Again" else "Reset",
-                    style=typography.headlineLarge)
+                    modifier = Modifier,
+                    style = typography.headlineLarge)
             }
         }
     }
@@ -159,13 +234,17 @@ fun Header (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMov
 
 @Composable
 fun PaletteButton (modifier:Modifier=Modifier, buttonColor:Color, isSelected:Boolean, onSelect:() -> Unit) {
-    Box (modifier=modifier.height(60.dp), contentAlignment=Alignment.Center) {
-        Button (modifier = Modifier
-            .height(if (isSelected) 30.dp else 60.dp)
-            .width(60.dp),
+    Box(
+        modifier = modifier.height (60.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Button(
+            onClick = onSelect,
+            modifier = Modifier
+                .height (if (isSelected) 30.dp else 60.dp)
+                .width (60.dp),
             enabled = ! isSelected,
-            colors = ButtonDefaults.buttonColors(containerColor=buttonColor, disabledContainerColor=buttonColor),
-            onClick = onSelect) {
-        }
+            colors = ButtonDefaults.buttonColors (containerColor=buttonColor, disabledContainerColor=buttonColor)
+        ) { }
     }
 }

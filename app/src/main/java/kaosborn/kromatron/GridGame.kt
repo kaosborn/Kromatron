@@ -14,7 +14,7 @@ class GridGame() {
     val board:List<List<Int>> get() = _board
     val isConstant get() = maxEnum==area
 
-    constructor (boardValues:Array<IntArray>, colors:Array<Color>) : this() {
+    constructor (boardValues:Array<IntArray>, colors:Array<Color>): this() {
         if (boardValues.isNotEmpty()) {
             for (r in boardValues) {
                 if (r.isEmpty() || r.any { it<0 || (it>0 && it>=colors.size) })
@@ -31,7 +31,7 @@ class GridGame() {
         }
     }
 
-    constructor (xSize:Int, ySize:Int, colors:Array<Color>) : this() {
+    constructor (xSize:Int, ySize:Int, colors:Array<Color>): this() {
         if (xSize<0 || ySize<0 || (xSize==0 && ySize>0))
             throw IllegalArgumentException ("Illegal value")
         _palette.addAll (colors)
@@ -59,7 +59,7 @@ class GridGame() {
 
     fun flood4 (newColor:Int): Int {
         var fillSize = 0
-        if (ySize != 0) {
+        if (ySize!=0) {
             val oldColor = _board[0][0]
             fun flood4R (x:Int, y:Int) {
                 when (_board[y][x]) {
