@@ -1,4 +1,6 @@
 package kaosborn.kromatron.ui
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.*
+import kotlinx.coroutines.delay
 
 @Composable
 fun getAppWidth(): Dp {
@@ -64,15 +67,42 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
 
         Header (Modifier, score=vm.score, moves=vm.moves, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isMonochrome, onReset = { vm.resetGame() })
 
+        val tick = if (vm.area<50) 50L else if (vm.area<200) 10L else 3L
         Column (modifier=Modifier, verticalArrangement=Arrangement.spacedBy(space)) {
-            vm.board.forEach { row ->
+            vm.board.forEachIndexed { y, row ->
                 Row (modifier=Modifier, horizontalArrangement=Arrangement.spacedBy(space)) {
-                    row.forEach { colorIx ->
-                        Text (modifier = Modifier
-                                .background(vm.palette[colorIx])
-                                .size(sizePerCell),
-                            textAlign = TextAlign.Center,
-                            text = " ")
+                    row.forEachIndexed { x, colorIx ->
+                        val rank = vm.rank[y][x]
+                        val text = remember { mutableStateOf("") }
+                        val color = remember { Animatable(Color.Unspecified) }
+                        LaunchedEffect (vm.heartbeat) {
+                            if (vm.moves==0)
+                                color.animateTo (vm.palette[colorIx], animationSpec=tween(25))
+                            else if (rank>0)
+                                if (rank<=vm.fillSize) {
+                                    delay (rank*tick)
+                                    color.animateTo (targetValue=vm.palette[colorIx], animationSpec=tween(250))
+                                }
+                                else {
+                                    delay (rank*tick)
+                                    text.value = "$"
+                                    delay (tick*2)
+                                    text.value = "$$"
+                                    delay (tick*2)
+                                    text.value = "$"
+                                    delay (tick*2)
+                                    text.value = " "
+                                }
+                        }
+
+                        Box (Modifier.background(color.value)) {
+                            Text(
+                                text = text.value,
+                                modifier = Modifier.size(sizePerCell),
+                                color = Color.Black,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
             }

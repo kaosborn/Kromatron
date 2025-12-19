@@ -6,12 +6,14 @@ class GridGame() {
     private val _palette = mutableStateListOf<Color>()
     private val _board = mutableStateListOf<MutableList<Int>>()
     private val _enums:MutableList<IntArray> = mutableListOf()
-    private var area = 0
+    var area = 0; private set
     var xSize = 0; private set
     var ySize = 0; private set
     var maxEnum = 0; private set
+    var fillSize = 0; private set
     val palette:List<Color> get() = _palette
     val board:List<List<Int>> get() = _board
+    val rank:List<IntArray> get() = _enums
     val isConstant get() = maxEnum==area
 
     constructor (boardValues:Array<IntArray>, colors:Array<Color>): this() {
@@ -52,13 +54,13 @@ class GridGame() {
                     _board[y][x] = (0..<_palette.size).random()
                     _enums[y][x] = 0
                 }
+            fillSize = 0
             maxEnum = 0
             crawl4()
         }
     }
 
     fun flood4 (newColor:Int): Int {
-        var fillSize = 0
         if (ySize!=0) {
             val oldColor = _board[0][0]
             fun flood4R (x:Int, y:Int) {
