@@ -41,18 +41,6 @@ fun getAppWidth(): Dp {
 
 @Composable
 fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
-    val boardWindowWidth = getAppWidth() - 4.dp
-    var space = 0.dp
-    var sizePerCell:Dp = boardWindowWidth / vm.xSize
-    if (sizePerCell>=20.dp)
-        if (sizePerCell<60.dp) {
-            space = 2.dp
-            sizePerCell = (boardWindowWidth - space * vm.xSize) / vm.xSize
-        }
-        else {
-            space = 4.dp
-            sizePerCell = 56.dp
-        }
 
     Column(
         modifier = Modifier.padding (top=8.dp),
@@ -65,49 +53,9 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
                 onConfirm = { v -> showSettings.value = false; vm.resetGame (v) },
                 onDismiss = { showSettings.value = false })
 
-        Header (Modifier, score=vm.score, moves=vm.moves, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isMonochrome, onReset = { vm.resetGame() })
-
-        val tick = if (vm.area<50) 50L else if (vm.area<200) 10L else 3L
-        Column (modifier=Modifier, verticalArrangement=Arrangement.spacedBy(space)) {
-            vm.board.forEachIndexed { y, row ->
-                Row (modifier=Modifier, horizontalArrangement=Arrangement.spacedBy(space)) {
-                    row.forEachIndexed { x, colorIx ->
-                        val rank = vm.rank[y][x]
-                        val text = remember { mutableStateOf("") }
-                        val color = remember { Animatable(Color.Unspecified) }
-                        LaunchedEffect (vm.heartbeat) {
-                            if (vm.moves==0)
-                                color.animateTo (vm.palette[colorIx], animationSpec=tween(25))
-                            else if (rank>0)
-                                if (rank<=vm.fillSize) {
-                                    delay (rank*tick)
-                                    color.animateTo (targetValue=vm.palette[colorIx], animationSpec=tween(250))
-                                }
-                                else {
-                                    delay (rank*tick)
-                                    text.value = "$"
-                                    delay (tick*2)
-                                    text.value = "$$"
-                                    delay (tick*2)
-                                    text.value = "$"
-                                    delay (tick*2)
-                                    text.value = " "
-                                }
-                        }
-
-                        Box (Modifier.background(color.value)) {
-                            Text(
-                                text = text.value,
-                                modifier = Modifier.size(sizePerCell),
-                                color = Color.Black,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
+        Scoreboard (Modifier, score=vm.score, moves=vm.moves, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isMonochrome, onReset = { vm.resetGame() })
+        Gameboard (vm)
+        
         Row(
             modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically
@@ -126,7 +74,7 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
 }
 
 @Composable
-fun Header (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMoves:Int?, isGameOver:Boolean, onReset:() -> Unit) {
+fun Scoreboard (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMoves:Int?, isGameOver:Boolean, onReset:() -> Unit) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy (8.dp)
@@ -257,6 +205,63 @@ fun Header (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMov
                     text = if (isGameOver) "Play Again" else "Reset",
                     modifier = Modifier,
                     style = typography.headlineLarge)
+            }
+        }
+    }
+}
+
+@Composable
+fun Gameboard (vm:GridGameViewModel) {
+    val boardWindowWidth = getAppWidth() - 4.dp
+    var space = 0.dp
+    var sizePerCell:Dp = boardWindowWidth / vm.xSize
+    if (sizePerCell>=20.dp)
+        if (sizePerCell<60.dp) {
+            space = 2.dp
+            sizePerCell = (boardWindowWidth - space * vm.xSize) / vm.xSize
+        }
+        else {
+            space = 4.dp
+            sizePerCell = 56.dp
+        }
+
+    val tick = if (vm.area<50) 50L else if (vm.area<200) 10L else 3L
+    Column (modifier=Modifier, verticalArrangement=Arrangement.spacedBy(space)) {
+        vm.board.forEachIndexed { y, row ->
+            Row (modifier=Modifier, horizontalArrangement=Arrangement.spacedBy(space)) {
+                row.forEachIndexed { x, colorIx ->
+                    val rank = vm.rank[y][x]
+                    val text = remember { mutableStateOf("") }
+                    val color = remember { Animatable(Color.Unspecified) }
+                    LaunchedEffect (vm.heartbeat) {
+                        if (vm.moves==0)
+                            color.animateTo (vm.palette[colorIx], animationSpec=tween(25))
+                        else if (rank>0)
+                            if (rank<=vm.fillSize) {
+                                delay (rank*tick)
+                                color.animateTo (targetValue=vm.palette[colorIx], animationSpec=tween(250))
+                            }
+                            else {
+                                delay (rank*tick)
+                                text.value = "$"
+                                delay (tick*2)
+                                text.value = "$$"
+                                delay (tick*2)
+                                text.value = "$"
+                                delay (tick*2)
+                                text.value = " "
+                            }
+                    }
+
+                    Box (Modifier.background(color.value)) {
+                        Text(
+                            text = text.value,
+                            modifier = Modifier.size(sizePerCell),
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
         }
     }

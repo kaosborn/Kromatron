@@ -62,7 +62,7 @@ class GridGameTests {
         val gg = GridGame(1,2,colors1)
         assertEquals (1, gg.xSize)
         assertEquals (2, gg.ySize)
-        assertEquals (2, gg.maxEnum)
+        assertEquals (2, gg.maxRank)
         assertEquals (expected1, gg.toString())
     }
 
@@ -74,7 +74,7 @@ class GridGameTests {
         val gg = GridGame(2,1,colors1)
         assertEquals (2, gg.xSize)
         assertEquals (1, gg.ySize)
-        assertEquals (2, gg.maxEnum)
+        assertEquals (2, gg.maxRank)
         assertEquals (expected1, gg.toString())
     }
 
@@ -101,7 +101,7 @@ class GridGameTests {
 
         val gg = GridGame (source, colors2)
         assertEquals (expected1, gg.toString())
-        assertEquals (4, gg.maxEnum)
+        assertEquals (4, gg.maxRank)
     }
 
     @Test
@@ -144,12 +144,12 @@ class GridGameTests {
 
         val gg = GridGame (source, colors2)
         assertEquals ("1", gg.toString())
-        assertEquals(1, gg.maxEnum)
+        assertEquals(1, gg.maxRank)
         assertTrue (gg.isConstant)
 
         gg.flood4 (0)
         assertEquals ("0", gg.toString())
-        assertEquals (1, gg.maxEnum)
+        assertEquals (1, gg.maxRank)
     }
 
     @Test
@@ -166,20 +166,20 @@ class GridGameTests {
 
         val gg = GridGame (source, colors3)
         assertTrue (gg.isEqual(source))
-        assertEquals (13, gg.maxEnum)
+        assertEquals (13, gg.maxRank)
 
         gg.flood4 (2)
         assertEquals (expected1, gg.toString())
-        assertEquals (15, gg.maxEnum)
+        assertEquals (15, gg.maxRank)
 
         gg.flood4 (1)
         assertEquals (expected2, gg.toString())
-        assertEquals (15, gg.maxEnum)
+        assertEquals (15, gg.maxRank)
         assertFalse (gg.isConstant)
 
         gg.flood4 (0)
         assertEquals (expected3, gg.toString())
-        assertEquals (20, gg.maxEnum)
+        assertEquals (20, gg.maxRank)
         assertTrue (gg.isConstant)
     }
 }

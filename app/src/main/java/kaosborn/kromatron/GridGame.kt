@@ -5,16 +5,16 @@ import androidx.compose.ui.graphics.Color
 class GridGame() {
     private val _palette = mutableStateListOf<Color>()
     private val _board = mutableStateListOf<MutableList<Int>>()
-    private val _enums:MutableList<IntArray> = mutableListOf()
+    private val _rank:MutableList<IntArray> = mutableListOf()
     var area = 0; private set
     var xSize = 0; private set
-    var ySize = 0; private set
-    var maxEnum = 0; private set
+    var maxRank = 0; private set
     var fillSize = 0; private set
     val palette:List<Color> get() = _palette
     val board:List<List<Int>> get() = _board
-    val rank:List<IntArray> get() = _enums
-    val isConstant get() = maxEnum==area
+    val rank:List<IntArray> get() = _rank
+    val ySize get() = _board.size
+    val isConstant get() = maxRank==area
 
     constructor (boardValues:Array<IntArray>, colors:Array<Color>): this() {
         if (boardValues.isNotEmpty()) {
@@ -22,12 +22,11 @@ class GridGame() {
                 if (r.isEmpty() || r.any { it<0 || (it>0 && it>=colors.size) })
                     throw IllegalArgumentException ("Illegal value")
                 _board.add (r.toMutableList())
-                _enums.add (IntArray(r.size))
+                _rank.add (IntArray(r.size))
                 this.area += r.size
                 if (this.xSize < r.size)
                     this.xSize = r.size
             }
-            this.ySize = boardValues.size
             _palette.addAll (colors)
             crawl4()
         }
@@ -39,10 +38,9 @@ class GridGame() {
         _palette.addAll (colors)
         for (y in 0..<ySize) {
             _board.add (MutableList(xSize) { 0 })
-            _enums.add (IntArray(xSize))
+            _rank.add (IntArray(xSize))
         }
         this.xSize = xSize
-        this.ySize = ySize
         this.area = xSize*ySize
         reset()
     }
@@ -52,10 +50,10 @@ class GridGame() {
             for (y in _board.indices)
                 for (x in _board[y].indices) {
                     _board[y][x] = (0..<_palette.size).random()
-                    _enums[y][x] = 0
+                    _rank[y][x] = 0
                 }
             fillSize = 0
-            maxEnum = 0
+            maxRank = 0
             crawl4()
         }
     }
@@ -80,18 +78,18 @@ class GridGame() {
                     }
                 }
             }
-            fillSize = maxEnum
+            fillSize = maxRank
             flood4R (0,0)
         }
-        return maxEnum - fillSize
+        return maxRank - fillSize
     }
 
     private fun crawl4 (x:Int=0, y:Int=0) {
         val color = _board[y][x]
         fun crawl4R (x:Int, y:Int) {
-            if (_enums[y][x]==0) {
-                maxEnum++
-                _enums[y][x] = maxEnum
+            if (_rank[y][x]==0) {
+                maxRank++
+                _rank[y][x] = maxRank
                 if (x>0 && _board[y][x-1]==color)
                     crawl4R (x-1,y)
                 if (y>0 && x<_board[y-1].size && _board[y-1][x]==color)

@@ -19,7 +19,7 @@ class GridGameViewModel() : ViewModel() {
     var loMoves by mutableStateOf<Int?> (null); private set
     var heartbeat by mutableStateOf (0L); private set
 
-    init { addPoints (grid.maxEnum) }
+    init { addPoints (grid.maxRank) }
 
     val palette:List<Color> get() = grid.palette
     val board:List<List<Int>> get() = grid.board
@@ -28,7 +28,7 @@ class GridGameViewModel() : ViewModel() {
     val ySize get() = grid.ySize
     val area get() = grid.area
     val fillSize get() = grid.fillSize
-    val isMonochrome:Boolean get() = grid.isConstant
+    val isMonochrome get() = grid.isConstant
 
     fun resetGame (vals:Settings) {
         if (vals.paletteSize<=baseColors.size)
@@ -36,7 +36,7 @@ class GridGameViewModel() : ViewModel() {
                 grid = GridGame (xSize=vals.boardSize, ySize=vals.boardSize, colors=baseColors.subList(0,vals.paletteSize).toTypedArray())
                 score = 0
                 moves = 0
-                addPoints (grid.maxEnum)
+                addPoints (grid.maxRank)
             }
     }
 
@@ -44,7 +44,7 @@ class GridGameViewModel() : ViewModel() {
         grid.reset()
         score = 0
         moves = 0
-        addPoints (grid.maxEnum)
+        addPoints (grid.maxRank)
     }
 
     fun pushMove (replacementColor:Int) {
