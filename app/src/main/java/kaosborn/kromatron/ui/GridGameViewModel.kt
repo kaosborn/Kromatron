@@ -29,6 +29,7 @@ class GridGameViewModel() : ViewModel() {
     val area get() = grid.area
     val fillSize get() = grid.fillSize
     val isMonochrome get() = grid.isConstant
+    val root:Int? get() = if (grid.isConstant) null else board[0][0]
 
     fun resetGame (vals:Settings) {
         if (vals.paletteSize<=baseColors.size)

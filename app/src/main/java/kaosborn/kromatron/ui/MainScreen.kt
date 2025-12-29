@@ -41,7 +41,6 @@ fun getAppWidth(): Dp {
 
 @Composable
 fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
-
     Column(
         modifier = Modifier.padding (top=8.dp),
         verticalArrangement = Arrangement.spacedBy (8.dp),
@@ -53,32 +52,15 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
                 onConfirm = { v -> showSettings.value = false; vm.resetGame (v) },
                 onDismiss = { showSettings.value = false })
 
-        Scoreboard (Modifier, score=vm.score, moves=vm.moves, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isMonochrome, onReset = { vm.resetGame() })
+        Scoreboard (score=vm.score, moves=vm.moves, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isMonochrome, onReset = { vm.resetGame() })
         Gameboard (vm)
-        
-        Row(
-            modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            for (i in 0..<vm.palette.size) {
-                PaletteButton(
-                    modifier = Modifier,
-                    buttonColor = vm.palette[i],
-                    isSelected = vm.isMonochrome || vm.board[0][0]==i
-                ) {
-                    vm.pushMove (i)
-                }
-            }
-        }
+        Palette (vm, vm.root)
     }
 }
 
 @Composable
-fun Scoreboard (modifier:Modifier=Modifier, score:Int, moves:Int, hiScore:Int, loMoves:Int?, isGameOver:Boolean, onReset:() -> Unit) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy (8.dp)
-    ) {
+fun Scoreboard (score:Int, moves:Int, hiScore:Int, loMoves:Int?, isGameOver:Boolean, onReset:() -> Unit) {
+    Column (verticalArrangement=Arrangement.spacedBy (8.dp)) {
         Row (Modifier.fillMaxWidth()) {
             Box(
                 modifier = Modifier.weight (1f),
@@ -268,18 +250,26 @@ fun Gameboard (vm:GridGameViewModel) {
 }
 
 @Composable
-fun PaletteButton (modifier:Modifier=Modifier, buttonColor:Color, isSelected:Boolean, onSelect:() -> Unit) {
-    Box(
-        modifier = modifier.height (60.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Button(
-            onClick = onSelect,
-            modifier = Modifier
-                .height (if (isSelected) 30.dp else 60.dp)
-                .width (60.dp),
-            enabled = ! isSelected,
-            colors = ButtonDefaults.buttonColors (containerColor=buttonColor, disabledContainerColor=buttonColor)
-        ) { }
+fun Palette (vm:GridGameViewModel, root:Int?) {
+    var width:Dp = (getAppWidth() - 4.dp) / vm.palette.size
+    if (width > 60.dp)
+        width = 60.dp
+
+    Row (verticalAlignment=Alignment.CenterVertically) {
+        for (i in 0..<vm.palette.size) {
+            Box(
+                modifier = Modifier.height (60.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    onClick = { vm.pushMove (i) },
+                    modifier = Modifier
+                        .height (if (root==null || root==i) 30.dp else 60.dp)
+                        .width (width),
+                    enabled = root!=null && root!=i,
+                    colors = ButtonDefaults.buttonColors (containerColor=vm.palette[i], disabledContainerColor=vm.palette[i])
+                ) { }
+            }
+        }
     }
 }
