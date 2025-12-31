@@ -54,8 +54,23 @@ class GridGame() {
                 }
             fillSize = 0
             maxRank = 0
+            addSalt()
             crawl4()
         }
+    }
+
+    private fun addSalt() {
+        if (ySize>2 && xSize>2)
+            for (k in 1..(xSize-2)*(ySize-2)) {
+                val x = (1..xSize-2).random()
+                val y = (1..ySize-2).random()
+                if ((0..1).random()==0) {
+                    if (_board[y-1][x]==_board[y+1][x])
+                        _board[y][x] = _board[y-1][x]
+                }
+                else if (_board[y][x-1]==_board[y][x+1])
+                    _board[y][x] = _board[y][x-1]
+            }
     }
 
     fun flood4 (newColor:Int): Int {
