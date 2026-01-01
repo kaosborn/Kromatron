@@ -3,6 +3,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -28,12 +29,20 @@ import kaosborn.kromatron.ui.MainScreen
 import kaosborn.kromatron.ui.GridGameViewModel
 
 class MainActivity : ComponentActivity() {
+    val vm:GridGameViewModel by viewModels()
+
     override fun onCreate (savedInstanceState:Bundle?) {
         super.onCreate (savedInstanceState)
         enableEdgeToEdge()
+        vm.loadState (getPreferences (MODE_PRIVATE))
         setContent {
             AppScreen()
         }
+    }
+
+    override fun onPause() {
+        vm.saveState (getPreferences (MODE_PRIVATE))
+        super.onPause()
     }
 }
 

@@ -54,7 +54,7 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
 
         Scoreboard (score=vm.score, moves=vm.moves, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isMonochrome, onReset = { vm.resetGame() })
         Gameboard (vm)
-        Palette (vm, vm.root)
+        Palette (vm, vm.palette, vm.root)
     }
 }
 
@@ -216,7 +216,7 @@ fun Gameboard (vm:GridGameViewModel) {
                     val text = remember { mutableStateOf("") }
                     val color = remember { Animatable(Color.Gray) }
                     LaunchedEffect (vm.heartbeat) {
-                        if (vm.moves==0)
+                        if (vm.moves==0 || vm.heartbeat<=2L)
                             color.animateTo (vm.palette[colorIx], animationSpec=tween(25))
                         else if (rank>0)
                             if (rank<=vm.fillSize) {
@@ -250,13 +250,13 @@ fun Gameboard (vm:GridGameViewModel) {
 }
 
 @Composable
-fun Palette (vm:GridGameViewModel, root:Int?) {
-    var width:Dp = (getAppWidth() - 4.dp) / vm.palette.size
+fun Palette (vm:GridGameViewModel, palette:List<Color>, selection:Int?) {
+    var width:Dp = (getAppWidth() - 4.dp) / palette.size
     if (width > 60.dp)
         width = 60.dp
 
     Row (verticalAlignment=Alignment.CenterVertically) {
-        for (i in 0..<vm.palette.size) {
+        for (i in 0..<palette.size) {
             Box(
                 modifier = Modifier.height (60.dp),
                 contentAlignment = Alignment.Center
@@ -264,10 +264,10 @@ fun Palette (vm:GridGameViewModel, root:Int?) {
                 Button(
                     onClick = { vm.pushMove (i) },
                     modifier = Modifier
-                        .height (if (root==null || root==i) 30.dp else 60.dp)
+                        .height (if (selection==null || selection==i) 30.dp else 60.dp)
                         .width (width),
-                    enabled = root!=null && root!=i,
-                    colors = ButtonDefaults.buttonColors (containerColor=vm.palette[i], disabledContainerColor=vm.palette[i])
+                    enabled = selection!=null && selection!=i,
+                    colors = ButtonDefaults.buttonColors (containerColor=palette[i], disabledContainerColor=palette[i])
                 ) { }
             }
         }
