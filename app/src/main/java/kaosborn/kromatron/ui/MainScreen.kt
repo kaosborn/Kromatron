@@ -59,7 +59,7 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
 }
 
 @Composable
-fun Scoreboard (score:Int, moves:Int, hiScore:Int, loMoves:Int?, isGameOver:Boolean, onReset:() -> Unit) {
+fun Scoreboard (score:Int, moves:Int, hiScore:Int, loMoves:Int, isGameOver:Boolean, onReset:() -> Unit) {
     Column (verticalArrangement=Arrangement.spacedBy (8.dp)) {
         Row (Modifier.fillMaxWidth()) {
             Box(
@@ -173,7 +173,7 @@ fun Scoreboard (score:Int, moves:Int, hiScore:Int, loMoves:Int?, isGameOver:Bool
                         .background (colorScheme.secondary)
                 ) {
                     Text(
-                        text = if (loMoves==null) ": -" else ": $loMoves",
+                        text = if (loMoves<0) ": -" else ": $loMoves",
                         modifier = Modifier.padding (end=8.dp),
                         style = typography.headlineSmall
                     )
@@ -214,7 +214,7 @@ fun Gameboard (vm:GridGameViewModel) {
                 row.forEachIndexed { x, colorIx ->
                     val rank = vm.rank[y][x]
                     val text = remember { mutableStateOf("") }
-                    val color = remember { Animatable(Color.Unspecified) }
+                    val color = remember { Animatable(Color.Gray) }
                     LaunchedEffect (vm.heartbeat) {
                         if (vm.moves==0)
                             color.animateTo (vm.palette[colorIx], animationSpec=tween(25))

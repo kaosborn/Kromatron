@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 class GridGameTests {
     @Test
     fun emptyNoColors() {
-        val colors0:Array<Color> = emptyArray()
+        val colors0:List<Color> = emptyList()
         val gg = GridGame (0,0,colors0)
         assertEquals (0, gg.xSize)
         assertEquals (0, gg.ySize)
@@ -18,7 +18,7 @@ class GridGameTests {
 
     @Test
     fun emptyHasColors() {
-        val colors2:Array<Color> = arrayOf(Color.Red,Color.Blue)
+        val colors2:List<Color> = listOf(Color.Red,Color.Blue)
         val gg = GridGame (0,0,colors2)
         assertEquals (0, gg.xSize)
         assertEquals (0, gg.ySize)
@@ -28,7 +28,7 @@ class GridGameTests {
 
     @Test
     fun noWidth() {
-        val colors2 = arrayOf(Color.Red,Color.Blue)
+        val colors2 = listOf(Color.Red,Color.Blue)
         val exception = assertFailsWith<IllegalArgumentException> {
             val gg = GridGame (0,3,colors2)
         }
@@ -37,14 +37,14 @@ class GridGameTests {
 
     @Test
     fun noHeight() {
-        val colors2 = arrayOf(Color.Red,Color.Blue)
+        val colors2 = listOf(Color.Red,Color.Blue)
         val gg = GridGame (2,0,colors2)
         assertEquals ("", gg.toString())
     }
 
     @Test
     fun grid2by3NoColor() {
-        val colors0:Array<Color> = emptyArray()
+        val colors0:List<Color> = emptyList()
         val expected1 = "0 0\n0 0\n0 0"
 
         val gg = GridGame (2,3,colors0)
@@ -56,7 +56,7 @@ class GridGameTests {
 
     @Test
     fun grid1by2() {
-        val colors1 = arrayOf(Color.Red)
+        val colors1 = listOf(Color.Red)
         val expected1 = "0\n0"
 
         val gg = GridGame(1,2,colors1)
@@ -68,7 +68,7 @@ class GridGameTests {
 
     @Test
     fun grid2by1() {
-        val colors1 = arrayOf(Color.Red)
+        val colors1 = listOf(Color.Red)
         val expected1 = "0 0"
 
         val gg = GridGame(2,1,colors1)
@@ -80,7 +80,7 @@ class GridGameTests {
 
     @Test
     fun grid2by3() {
-        val colors2 = arrayOf(Color.Red)
+        val colors2 = listOf(Color.Red)
         val expected1 = "0 0\n0 0\n0 0"
 
         val gg = GridGame(2,3,colors2)
@@ -92,7 +92,7 @@ class GridGameTests {
 
     @Test
     fun gridByValues() {
-        val colors2 = arrayOf(Color.Red,Color.Blue)
+        val colors2 = listOf(Color.Red,Color.Blue)
         val source = arrayOf (
             intArrayOf ( 1,0 ),
             intArrayOf ( 1,1 ),
@@ -106,7 +106,7 @@ class GridGameTests {
 
     @Test
     fun floodEmptyNoColors() {
-        val colors0:Array<Color> = emptyArray()
+        val colors0:List<Color> = emptyList()
         val source:Array<IntArray> = emptyArray()
 
         val gg = GridGame (source, colors0)
@@ -118,7 +118,7 @@ class GridGameTests {
 
     @Test
     fun floodEmptyHasColors() {
-        val colors2 = arrayOf(Color.Red,Color.Blue)
+        val colors2 = listOf(Color.Red,Color.Blue)
         val source:Array<IntArray> = emptyArray()
 
         val gg = GridGame (source, colors2)
@@ -129,7 +129,7 @@ class GridGameTests {
 
     @Test
     fun flood0() {
-        val colors2 = arrayOf(Color.Red,Color.Blue)
+        val colors2 = listOf(Color.Red,Color.Blue)
         val source = arrayOf(intArrayOf())
         val exception = assertFailsWith<IllegalArgumentException> {
             val gg = GridGame (source, colors2)
@@ -139,7 +139,7 @@ class GridGameTests {
 
     @Test
     fun flood1() {
-        val colors2 = arrayOf(Color.Red,Color.Blue)
+        val colors2 = listOf(Color.Red,Color.Blue)
         val source = arrayOf (intArrayOf (1))
 
         val gg = GridGame (source, colors2)
@@ -154,8 +154,8 @@ class GridGameTests {
 
     @Test
     fun flood2() {
-        val colors3 = arrayOf(Color.Red,Color.Blue,Color.Green)
-        val source = arrayOf (
+        val colors3 = listOf (Color.Red,Color.Blue,Color.Green)
+        val source = arrayOf(
             intArrayOf ( 1,0,0,1,1 ),
             intArrayOf ( 1,1,1,0,1 ),
             intArrayOf ( 1,0,1,1,1 ),
