@@ -48,7 +48,7 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
     ) {
         if (showSettings.value)
             SettingsDialog(
-                vals = Settings (vm.xSize,vm.palette.size,vm.baseColors.size),
+                vals = Settings (vm.boardWidth,vm.palette.size,vm.baseColors.size),
                 onConfirm = { v -> showSettings.value = false; vm.resetGame (v) },
                 onDismiss = { showSettings.value = false })
 
@@ -196,11 +196,11 @@ fun Scoreboard (score:Int, moves:Int, hiScore:Int, loMoves:Int, isGameOver:Boole
 fun Gameboard (vm:GridGameViewModel) {
     val boardWindowWidth = getAppWidth() - 4.dp
     var space = 0.dp
-    var sizePerCell:Dp = boardWindowWidth / vm.xSize
+    var sizePerCell:Dp = boardWindowWidth / vm.boardWidth
     if (sizePerCell>=20.dp)
         if (sizePerCell<60.dp) {
             space = 2.dp
-            sizePerCell = (boardWindowWidth - space * vm.xSize) / vm.xSize
+            sizePerCell = (boardWindowWidth - space * vm.boardWidth) / vm.boardWidth
         }
         else {
             space = 4.dp

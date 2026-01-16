@@ -12,7 +12,7 @@ import kaosborn.kromatron.ui.theme.*
 
 class GridGameViewModel() : ViewModel() {
     val baseColors = listOf(Crimson,RoyalBlue,LimeGreen,Cyan,Gold,MediumVioletRed,Brown)
-    private var grid = GridGame (5, 5, baseColors.subList(0,5))
+    private var grid = GridGame (baseColors.subList(0,5), 5, 5)
     var score by mutableIntStateOf (0); private set
     var moves by mutableIntStateOf (0); private set
     var hiScore by mutableIntStateOf (0); private set
@@ -21,7 +21,7 @@ class GridGameViewModel() : ViewModel() {
     val palette:List<Color> get() = grid.palette
     val board:List<List<Int>> get() = grid.data
     val rank:List<List<Int>> get() = grid.rank
-    val xSize get() = grid.xSize
+    val boardWidth get() = grid.xSize
     val area get() = grid.area
     val fillSize get() = grid.fillSize
     val isMonochrome get() = grid.isConstant
@@ -40,7 +40,11 @@ class GridGameViewModel() : ViewModel() {
                 }
                 score = 0
                 moves = 0
-                grid = GridGame (xSize=vals.boardSize, ySize=vals.boardSize, colors=baseColors.subList(0,vals.paletteSize))
+                grid = GridGame(
+                    colors = baseColors.subList (0, vals.paletteSize),
+                    xSize = vals.boardSize,
+                    ySize = vals.boardSize
+                )
                 addPoints (grid.maxRank)
             }
     }
@@ -54,7 +58,7 @@ class GridGameViewModel() : ViewModel() {
 
     fun pushMove (colorIndex:Int) {
         moves++
-        addPoints (grid.flood4(colorIndex))
+        addPoints (grid.flood4 (colorIndex))
     }
 
     private fun addPoints (expansion:Int) {
@@ -92,7 +96,7 @@ class GridGameViewModel() : ViewModel() {
     }
 
     fun loadState (prefs:SharedPreferences) {
-        val paletteLine = prefs.getString(PALETTE_KEY,null)
+        val paletteLine = prefs.getString (PALETTE_KEY, null)
         if (paletteLine!=null) {
             score = prefs.getInt (SCORE_KEY, 0)
             moves = prefs.getInt (MOVES_KEY, 0)

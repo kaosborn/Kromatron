@@ -20,7 +20,7 @@ class GridGame() {
     fun getDataLine(y:Int) = _data[y].joinToString(" ")
     fun getRankLine(y:Int) = _rank[y].joinToString(" ")
 
-    constructor (boardValues:Array<IntArray>, colors:List<Color>): this() {
+    constructor (colors:List<Color>, boardValues:List<List<Int>>): this() {
         if (boardValues.isNotEmpty()) {
             for (r in boardValues) {
                 if (r.isEmpty() || r.any { it<0 || (it>0 && it>=colors.size) })
@@ -36,7 +36,7 @@ class GridGame() {
         }
     }
 
-    constructor (xSize:Int, ySize:Int, colors:List<Color>): this() {
+    constructor (colors:List<Color>, xSize:Int, ySize:Int): this() {
         if (xSize<0 || ySize<0 || (xSize==0 && ySize>0))
             throw IllegalArgumentException ("Illegal value")
         _palette.addAll (colors)
@@ -137,29 +137,21 @@ class GridGame() {
         expand4R (x,y)
     }
 
-    fun isEqual (rval:Array<IntArray>): Boolean {
+    fun isEqual (rval:List<List<Int>>): Boolean {
         if (rval.size!=_data.size)
             return false
-        for (y in _data.indices) {
-            if (_data[y].size!=rval[y].size)
+        for (y in _data.indices)
+            if (_data[y]!=rval[y])
                 return false
-            for (x in _data[y].indices)
-                if (_data[y][x]!=rval[y][x])
-                    return false
-        }
         return true
     }
 
     override fun toString(): String {
         var result = ""
-        for (y in 0..<_data.size) {
+        _data.forEachIndexed { y, r ->
             if (y>0)
                 result += "\n"
-            for (x in 0..<_data[y].size) {
-                if (x>0)
-                    result += " "
-                result += _data[y][x].toString()
-            }
+            result += r.joinToString (" ")
         }
         return result
     }
