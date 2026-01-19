@@ -51,7 +51,7 @@ fun MainScreen (vm:GridGameViewModel, showSettings:MutableState<Boolean>) {
                 onConfirm = { v -> showSettings.value = false; vm.resetGame (v) },
                 onDismiss = { showSettings.value = false })
 
-        Scoreboard (score=vm.score, moves=vm.moveCount, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isMonochrome, onReset = { vm.resetGame() }, onUndo = { vm.popMove() } )
+        Scoreboard (score=vm.score, moves=vm.moves, hiScore=vm.hiScore, loMoves=vm.loMoves, isGameOver=vm.isBoardMonochrome, onReset = { vm.resetGame() }, onUndo = { vm.popMove() } )
 
         Column (modifier=Modifier, verticalArrangement=Arrangement.spacedBy(4.dp)) {
             vm.board.forEach { row ->

@@ -63,7 +63,7 @@ class GridGameTests {
         val gg = GridGame (colors1, 1, 2)
         assertEquals (1, gg.xSize)
         assertEquals (2, gg.ySize)
-        assertEquals (2, gg.maxRank)
+        assertEquals (2, gg.monoArea)
         assertEquals (expected1, gg.toString())
     }
 
@@ -75,7 +75,7 @@ class GridGameTests {
         val gg = GridGame (colors1, 2, 1)
         assertEquals (2, gg.xSize)
         assertEquals (1, gg.ySize)
-        assertEquals (2, gg.maxRank)
+        assertEquals (2, gg.monoArea)
         assertEquals (expected1, gg.toString())
     }
 
@@ -102,7 +102,7 @@ class GridGameTests {
 
         val gg = GridGame (colors2, source)
         assertEquals (expected1, gg.toString())
-        assertEquals (4, gg.maxRank)
+        assertEquals (4, gg.monoArea)
     }
 
     @Test
@@ -146,12 +146,12 @@ class GridGameTests {
 
         val gg = GridGame (colors2, source)
         assertEquals ("1", gg.toString())
-        assertEquals(1, gg.maxRank)
+        assertEquals(1, gg.monoArea)
         assertTrue (gg.isConstant)
 
         gg.flood4 (0)
         assertEquals ("0", gg.toString())
-        assertEquals (1, gg.maxRank)
+        assertEquals (1, gg.monoArea)
     }
 
     @Test
@@ -174,20 +174,20 @@ class GridGameTests {
 
         val gg = GridGame (colors3, source)
         assertTrue (gg.isEqual (sourceCopy))
-        assertEquals (13, gg.maxRank)
+        assertEquals (13, gg.monoArea)
 
         gg.flood4 (2)
         assertEquals (expected1, gg.toString())
-        assertEquals (15, gg.maxRank)
+        assertEquals (15, gg.monoArea)
 
         gg.flood4 (1)
         assertEquals (expected2, gg.toString())
-        assertEquals (15, gg.maxRank)
+        assertEquals (15, gg.monoArea)
         assertFalse (gg.isConstant)
 
         gg.flood4 (0)
         assertEquals (expected3, gg.toString())
-        assertEquals (20, gg.maxRank)
+        assertEquals (20, gg.monoArea)
         assertTrue (gg.isConstant)
     }
 }

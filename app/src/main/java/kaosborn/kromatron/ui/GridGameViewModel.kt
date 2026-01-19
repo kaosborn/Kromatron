@@ -22,13 +22,13 @@ class GridGameViewModel() : ViewModel() {
     val board:List<List<Int>> get() = grid.data
     val rank:List<List<Int>> get() = grid.rank
     val boardWidth get() = grid.xSize
-    val area get() = grid.area
-    val fillSize get() = grid.fillSize
-    val isMonochrome get() = grid.isConstant
+    val boardArea get() = grid.gridArea
+    val fillArea get() = grid.fillArea
+    val isBoardMonochrome get() = grid.isConstant
     val root:Int? get() = if (grid.isConstant) null else board[0][0]
 
     init {
-        addPoints (grid.maxRank)
+        addPoints (grid.monoArea)
     }
 
     fun resetGame (vals:Settings) {
@@ -45,7 +45,7 @@ class GridGameViewModel() : ViewModel() {
                     xSize = vals.boardSize,
                     ySize = vals.boardSize
                 )
-                addPoints (grid.maxRank)
+                addPoints (grid.monoArea)
             }
     }
 
@@ -53,7 +53,7 @@ class GridGameViewModel() : ViewModel() {
         grid.reset()
         score = 0
         moves = 0
-        addPoints (grid.maxRank)
+        addPoints (grid.monoArea)
     }
 
     fun pushMove (colorIndex:Int) {
@@ -65,7 +65,7 @@ class GridGameViewModel() : ViewModel() {
         score += expansion * (expansion+1)
         if (hiScore < score)
             hiScore = score
-        if (isMonochrome && (loMoves !in 0..moves))
+        if (isBoardMonochrome && (loMoves !in 0..moves))
             loMoves = moves
         heartbeat++
     }

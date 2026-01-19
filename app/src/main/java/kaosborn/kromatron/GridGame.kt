@@ -7,18 +7,18 @@ class GridGame() {
     private val _palette = mutableStateListOf<Color>()
     private val _data = mutableStateListOf<MutableList<Int>>()
     private val _rank = mutableStateListOf<MutableList<Int>>()
-    var area = 0; private set
+    var gridArea = 0; private set
+    var monoArea = 0; private set
+    var fillArea = 0; private set
     var xSize = 0; private set
-    var maxRank = 0; private set
-    var fillSize = 0; private set
+    val ySize get() = _data.size
     val palette:List<Color> get() = _palette
     val data:List<List<Int>> get() = _data
     val rank:List<List<Int>> get() = _rank
-    val ySize get() = _data.size
-    val isConstant get() = maxRank==area
+    val isConstant get() = monoArea==gridArea
     fun getPaletteLine() = _palette.map { it.toArgb() }.joinToString(" ")
-    fun getDataLine(y:Int) = _data[y].joinToString(" ")
-    fun getRankLine(y:Int) = _rank[y].joinToString(" ")
+    fun getDataLine (y:Int) = _data[y].joinToString(" ")
+    fun getRankLine (y:Int) = _rank[y].joinToString(" ")
 
     constructor (colors:List<Color>, boardValues:List<List<Int>>): this() {
         if (boardValues.isNotEmpty()) {
@@ -27,7 +27,7 @@ class GridGame() {
                     throw IllegalArgumentException ("Illegal value")
                 _data.add (r.toMutableList())
                 _rank.add (MutableList(r.size) { 0 })
-                this.area += r.size
+                this.gridArea += r.size
                 if (this.xSize < r.size)
                     this.xSize = r.size
             }
@@ -45,7 +45,7 @@ class GridGame() {
             _rank.add (MutableList(xSize) { 0 })
         }
         this.xSize = xSize
-        this.area = xSize*ySize
+        this.gridArea = xSize*ySize
         reset()
     }
 
@@ -56,12 +56,12 @@ class GridGame() {
     fun addRow (dataRow:List<Int>, rankRow:List<Int>) {
         _data.add (dataRow.toMutableList())
         _rank.add (rankRow.toMutableList())
-        area += dataRow.size
+        gridArea += dataRow.size
         if (xSize < dataRow.size)
             xSize = dataRow.size
         val max = rankRow.max()
-        if (maxRank < max)
-            maxRank = max
+        if (monoArea < max)
+            monoArea = max
     }
 
     fun reset() {
@@ -71,8 +71,8 @@ class GridGame() {
                     _data[y][x] = (0..<_palette.size).random()
                     _rank[y][x] = 0
                 }
-            fillSize = 0
-            maxRank = 0
+            fillArea = 0
+            monoArea = 0
             addSalt()
             expand4()
         }
@@ -112,18 +112,18 @@ class GridGame() {
                     }
                 }
             }
-            fillSize = maxRank
+            fillArea = monoArea
             flood4R (0,0)
         }
-        return maxRank - fillSize
+        return monoArea - fillArea
     }
 
     private fun expand4 (x:Int=0, y:Int=0) {
         val colorIndex = _data[y][x]
         fun expand4R (x:Int, y:Int) {
             if (_rank[y][x]==0) {
-                maxRank++
-                _rank[y][x] = maxRank
+                monoArea++
+                _rank[y][x] = monoArea
                 if (x>0 && _data[y][x-1]==colorIndex)
                     expand4R (x-1,y)
                 if (y>0 && x<_data[y-1].size && _data[y-1][x]==colorIndex)
