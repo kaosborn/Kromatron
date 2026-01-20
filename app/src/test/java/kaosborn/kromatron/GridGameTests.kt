@@ -115,6 +115,9 @@ class GridGameTests {
 
         gg.flood4 (0)
         assertEquals ("", gg.toString())
+
+        gg.reclaim()
+        assertEquals ("", gg.toString())
     }
 
     @Test
@@ -189,5 +192,18 @@ class GridGameTests {
         assertEquals (expected3, gg.toString())
         assertEquals (20, gg.monoArea)
         assertTrue (gg.isConstant)
+
+        gg.reclaim()
+        assertEquals (expected2, gg.toString())
+        assertFalse (gg.isConstant)
+
+        gg.reclaim()
+        assertEquals (expected1, gg.toString())
+
+        gg.reclaim()
+        assertTrue (gg.isEqual(sourceCopy))
+
+        gg.reclaim()
+        assertTrue (gg.isEqual(sourceCopy))
     }
 }

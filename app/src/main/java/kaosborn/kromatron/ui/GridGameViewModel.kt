@@ -14,18 +14,18 @@ class GridGameViewModel() : ViewModel() {
     val baseColors = listOf(Crimson,RoyalBlue,LimeGreen,Cyan,Gold,MediumVioletRed,Brown)
     private var grid = GridGame (baseColors.subList(0,5), 5, 5)
     var score by mutableIntStateOf (0); private set
-    var moves by mutableIntStateOf (0); private set
     var hiScore by mutableIntStateOf (0); private set
     var loMoves by mutableIntStateOf (-1); private set
     var heartbeat by mutableLongStateOf (0L); private set
-    val palette:List<Color> get() = grid.palette
-    val board:List<List<Int>> get() = grid.data
-    val rank:List<List<Int>> get() = grid.rank
+    val board get() = grid.data
+    val rank get() = grid.rank
+    val palette get() = grid.palette
+    val moves get() = grid.moveCount
     val boardWidth get() = grid.xSize
     val boardArea get() = grid.gridArea
     val fillArea get() = grid.fillArea
     val isBoardMonochrome get() = grid.isConstant
-    val root:Int? get() = if (grid.isConstant) null else board[0][0]
+    val root get() = if (grid.isConstant) null else board[0][0]
 
     init {
         addPoints (grid.monoArea)
@@ -39,26 +39,28 @@ class GridGameViewModel() : ViewModel() {
                     loMoves = -1
                 }
                 score = 0
-                moves = 0
                 grid = GridGame(
                     colors = baseColors.subList (0, vals.paletteSize),
                     xSize = vals.boardSize,
-                    ySize = vals.boardSize
-                )
+                    ySize = vals.boardSize)
                 addPoints (grid.monoArea)
             }
     }
 
     fun resetGame() {
-        grid.reset()
         score = 0
-        moves = 0
+        grid.reset()
         addPoints (grid.monoArea)
     }
 
     fun pushMove (colorIndex:Int) {
-        moves++
         addPoints (grid.flood4 (colorIndex))
+    }
+
+    fun popMove() {
+        val shrinkage = grid.reclaim()
+        score -= shrinkage * (shrinkage+1)
+        heartbeat++
     }
 
     private fun addPoints (expansion:Int) {
@@ -73,7 +75,7 @@ class GridGameViewModel() : ViewModel() {
     companion object {
         private const val PALETTE_KEY = "PALETTE"
         private const val SCORE_KEY = "SCORE"
-        private const val MOVES_KEY = "MOVES"
+        private const val MOVES_KEY = "MOVE_STACK"
         private const val HI_SCORE_KEY = "HI_SCORE"
         private const val LO_MOVES_KEY = "LO_MOVES"
         private const val DATA_KEY_PREFIX = "DATA_"
@@ -83,7 +85,6 @@ class GridGameViewModel() : ViewModel() {
     fun saveState (prefs:SharedPreferences) {
         prefs.edit {
             putInt (SCORE_KEY, score)
-            putInt (MOVES_KEY, moves)
             putInt (HI_SCORE_KEY, hiScore)
             putInt (LO_MOVES_KEY, loMoves)
             putString (PALETTE_KEY, grid.getPaletteLine())
@@ -92,6 +93,7 @@ class GridGameViewModel() : ViewModel() {
                 putString (RANK_KEY_PREFIX+y, grid.getRankLine(y))
             }
             remove (DATA_KEY_PREFIX+grid.ySize)
+            putString (MOVES_KEY, grid.getMovesLine())
         }
     }
 
@@ -99,11 +101,10 @@ class GridGameViewModel() : ViewModel() {
         val paletteLine = prefs.getString (PALETTE_KEY, null)
         if (paletteLine!=null) {
             score = prefs.getInt (SCORE_KEY, 0)
-            moves = prefs.getInt (MOVES_KEY, 0)
             hiScore = prefs.getInt (HI_SCORE_KEY, 0)
             loMoves = prefs.getInt (LO_MOVES_KEY,-1)
             grid = GridGame (paletteLine
-                .split(" ")
+                .split (' ')
                 .map { it.toInt() }
                 .map { Color(it) })
             for (y in 0..Int.MAX_VALUE) {
@@ -112,9 +113,10 @@ class GridGameViewModel() : ViewModel() {
                 if (dataLine==null || rankLine==null)
                     break
                 grid.addRow(
-                    dataLine.split(" ").map { it.toInt() },
-                    rankLine.split(" ").map { it.toInt() })
+                    dataLine.split(' ').map { it.toInt() },
+                    rankLine.split(' ').map { it.toInt() })
             }
+            grid.addMoves (prefs.getString (MOVES_KEY, ""))
         }
         heartbeat++
     }

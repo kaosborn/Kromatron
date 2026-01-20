@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Scoreboard (score:Int, moves:Int, hiScore:Int, loMoves:Int, isGameOver:Boolean, onReset:() -> Unit) {
+fun Scoreboard (score:Int, moves:Int, hiScore:Int, loMoves:Int, isGameOver:Boolean, onReset:() -> Unit, onUndo:() -> Unit) {
     Column (verticalArrangement=Arrangement.spacedBy(8.dp)) {
         Row (Modifier.fillMaxWidth()) {
             Box(
@@ -145,6 +145,12 @@ fun Scoreboard (score:Int, moves:Int, hiScore:Int, loMoves:Int, isGameOver:Boole
             Button (onClick=onReset) {
                 Text(
                     text = if (isGameOver) "Play Again" else "Reset",
+                    modifier = Modifier,
+                    style = typography.headlineLarge)
+            }
+            Button (onClick=onUndo) {
+                Text(
+                    text = if (moves>0) "Undo" else "(undo)",
                     modifier = Modifier,
                     style = typography.headlineLarge)
             }

@@ -4,21 +4,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 
 class GridGame() {
-    private val _palette = mutableStateListOf<Color>()
     private val _data = mutableStateListOf<MutableList<Int>>()
     private val _rank = mutableStateListOf<MutableList<Int>>()
+    private val _palette = mutableStateListOf<Color>()
+    private val _moveStack = mutableStateListOf<MoveNode>()
     var gridArea = 0; private set
     var monoArea = 0; private set
     var fillArea = 0; private set
     var xSize = 0; private set
     val ySize get() = _data.size
-    val palette:List<Color> get() = _palette
-    val data:List<List<Int>> get() = _data
-    val rank:List<List<Int>> get() = _rank
+    val data get() = _data
+    val rank get() = _rank
+    val palette get() = _palette
+    val moveCount get() = _moveStack.size
     val isConstant get() = monoArea==gridArea
-    fun getPaletteLine() = _palette.map { it.toArgb() }.joinToString(" ")
     fun getDataLine (y:Int) = _data[y].joinToString(" ")
     fun getRankLine (y:Int) = _rank[y].joinToString(" ")
+    fun getPaletteLine() = _palette.map { it.toArgb() }.joinToString(" ")
+    fun getMovesLine() = _moveStack.joinToString(" ") { it.colorIndex.toString() + " " + it.fillArea }
 
     constructor (colors:List<Color>, boardValues:List<List<Int>>): this() {
         if (boardValues.isNotEmpty()) {
@@ -64,18 +67,45 @@ class GridGame() {
             monoArea = max
     }
 
+    fun addMoves (moveHistoryLine:String?) {
+        if (! moveHistoryLine.isNullOrEmpty())
+            _moveStack.addAll (moveHistoryLine
+                .split (' ')
+                .map { it.toInt() }
+                .chunked (2)
+                .map { c -> MoveNode (c[0], c[1]) })
+    }
+
     fun reset() {
         if (ySize>0 && _palette.isNotEmpty()) {
-            for (y in _data.indices)
-                for (x in _data[y].indices) {
-                    _data[y][x] = (0..<_palette.size).random()
-                    _rank[y][x] = 0
-                }
+            for (r in _data)
+                for (x in r.indices)
+                    r[x] = (0..<_palette.size).random()
+            for (r in _rank)
+                for (x in r.indices)
+                    r[x] = 0
+            _moveStack.clear()
             fillArea = 0
             monoArea = 0
             addSalt()
             expand4()
         }
+    }
+
+    fun reclaim(): Int {
+        val monoArea0 = monoArea
+        if (_moveStack.isNotEmpty()) {
+            val colorIndex = _moveStack[_moveStack.lastIndex].colorIndex
+            monoArea = _moveStack[_moveStack.lastIndex].fillArea
+            for ((y,r) in _rank.withIndex())
+                for (x in 0..<r.size)
+                     if (r[x] > monoArea)
+                        r[x] = 0
+                    else if (r[x] > 0)
+                        _data[y][x] = colorIndex
+            _moveStack.removeAt (_moveStack.lastIndex)
+        }
+        return monoArea0 - monoArea
     }
 
     private fun addSalt() {
@@ -95,6 +125,7 @@ class GridGame() {
     fun flood4 (colorIndex:Int): Int {
         if (ySize!=0) {
             val targetColorIndex = _data[0][0]
+            _moveStack.add (MoveNode (targetColorIndex, monoArea))
             fun flood4R (x:Int, y:Int) {
                 when (_data[y][x]) {
                     colorIndex ->
