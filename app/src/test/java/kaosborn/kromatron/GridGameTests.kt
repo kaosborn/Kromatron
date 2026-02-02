@@ -7,6 +7,11 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class GridGameTests {
+    companion object {
+        val COLORS = listOf (Color.Red, Color.Blue, Color.Green, Color.Cyan, Color.Magenta, Color.Yellow)
+        fun getPoints (area:Int) = area * (area+1)
+    }
+
     @Test
     fun emptyNoColors() {
         val colors0:List<Color> = emptyList()
@@ -14,6 +19,7 @@ class GridGameTests {
         assertEquals (0, gg.xSize)
         assertEquals (0, gg.ySize)
         assertEquals ("", gg.toString())
+        assertTrue (gg.calcHint (1, ::getPoints) < 0)
     }
 
     @Test
@@ -24,6 +30,7 @@ class GridGameTests {
         assertEquals (0, gg.ySize)
         assertEquals ("", gg.toString())
         assertTrue (gg.isConstant)
+        assertTrue (gg.calcHint (1, ::getPoints) < 0)
     }
 
     @Test
@@ -41,6 +48,7 @@ class GridGameTests {
         val gg = GridGame (colors2, 2, 0)
         assertEquals ("", gg.toString())
         assertTrue (gg.isConstant)
+        assertTrue (gg.calcHint (1, ::getPoints) < 0)
     }
 
     @Test
@@ -51,8 +59,9 @@ class GridGameTests {
         val gg = GridGame (colors0, 2, 3)
         assertEquals (2, gg.xSize)
         assertEquals (3, gg.ySize)
-        assertEquals (expected1, gg.toString())
         assertFalse (gg.isConstant)
+        assertEquals (0, gg.calcHint (1, ::getPoints))
+        assertEquals (expected1, gg.toString())
     }
 
     @Test
@@ -64,6 +73,7 @@ class GridGameTests {
         assertEquals (1, gg.xSize)
         assertEquals (2, gg.ySize)
         assertEquals (2, gg.monoArea)
+        assertEquals (-1, gg.calcHint (0, ::getPoints))
         assertEquals (expected1, gg.toString())
     }
 
@@ -205,5 +215,70 @@ class GridGameTests {
 
         gg.reclaim()
         assertTrue (gg.isEqual(sourceCopy))
+    }
+
+    @Test
+    fun hints1() {
+        val gg = GridGame (COLORS.subList(0,4), listOf(listOf( 1,2,3 )))
+        assertEquals (2, gg.calcHint (0, ::getPoints))
+        assertEquals (2, gg.calcHint (1, ::getPoints))
+        assertEquals (2, gg.calcHint (2, ::getPoints))
+    }
+
+    @Test
+    fun hints2() {
+        val source1 = listOf(
+            listOf ( 0,1,1 ),
+            listOf ( 2,2,2 ))
+        val gg1 = GridGame (COLORS.subList(0,3), source1)
+        assertEquals (2, gg1.calcHint (0, ::getPoints))
+        assertEquals (2, gg1.calcHint (1, ::getPoints))
+        assertEquals (2, gg1.calcHint (2, ::getPoints))
+
+        val source2 = listOf(
+            listOf ( 0,2,2 ),
+            listOf ( 1,1,1 ))
+        val gg2 = GridGame (COLORS.subList(0,3), source2)
+        assertEquals (1, gg2.calcHint (0, ::getPoints))
+        assertEquals (1, gg2.calcHint (1, ::getPoints))
+        assertEquals (1, gg2.calcHint (2, ::getPoints))
+    }
+
+    @Test
+    fun hints3() {
+        val source = listOf(
+            listOf ( 0,1,3 ),
+            listOf ( 0,2,2 ),
+            listOf ( 3,3,0 ))
+        val gg = GridGame (COLORS.subList(0,4), source)
+        assertEquals (3, gg.calcHint (0, ::getPoints))
+        assertEquals (2, gg.calcHint (1, ::getPoints))
+    }
+
+    @Test
+    fun hints4() {
+        val source = listOf(
+            listOf ( 0,1,2,3 ),
+            listOf ( 0,3,3,0 ))
+        val gg = GridGame (COLORS.subList(0,4), source)
+        assertEquals (3, gg.calcHint (0, ::getPoints))
+        assertEquals (3, gg.calcHint (1, ::getPoints))
+        assertEquals (1, gg.calcHint (2, ::getPoints))
+        assertEquals (1, gg.calcHint (3, ::getPoints))
+    }
+
+    @Test
+    fun hints5() {
+        val source = listOf(
+            listOf ( 0,1,2,3 ),
+            listOf ( 0,3,3,5 ),
+            listOf ( 3,3,4,0 ))
+        val gg = GridGame (COLORS.subList(0,6), source)
+        assertEquals (3, gg.calcHint (0, ::getPoints))
+        assertEquals (3, gg.calcHint (1, ::getPoints))
+        assertEquals (1, gg.calcHint (2, ::getPoints))
+        assertEquals (1, gg.calcHint (3, ::getPoints))
+        assertEquals (1, gg.calcHint (4, ::getPoints))
+        assertEquals ("0 1 2 3\n0 3 3 5\n3 3 4 0", gg.toString())
     }
 }

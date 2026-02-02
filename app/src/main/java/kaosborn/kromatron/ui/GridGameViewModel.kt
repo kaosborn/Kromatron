@@ -16,6 +16,7 @@ class GridGameViewModel() : ViewModel() {
     var score by mutableIntStateOf (0); private set
     var hiScore by mutableIntStateOf (0); private set
     var loMoves by mutableIntStateOf (-1); private set
+    var hint by mutableIntStateOf (-1); private set
     var heartbeat by mutableLongStateOf (0L); private set
     val board get() = grid.data
     val rank get() = grid.rank
@@ -26,6 +27,22 @@ class GridGameViewModel() : ViewModel() {
     val fillArea get() = grid.fillArea
     val isBoardMonochrome get() = grid.isConstant
     val root get() = if (grid.isConstant) null else board[0][0]
+
+    val boardGauge:Int get() {
+        val openArea = boardArea - fillArea
+        return when (openArea * openArea * palette.size) {
+            in 1..350 -> 12
+            in 351..400 -> 11
+            in 401..450 -> 10
+            in 451..550 -> 9
+            in 551..700 -> 8
+            in 701..900 -> 7
+            in 901..1200 -> 6
+            in 1201..1500 -> 5
+            in 1501..2100 -> 4
+            else -> 3
+        }
+    }
 
     init {
         addPoints (grid.monoArea)
@@ -58,17 +75,24 @@ class GridGameViewModel() : ViewModel() {
     }
 
     fun popMove() {
-        val shrinkage = grid.reclaim()
-        score -= shrinkage * (shrinkage+1)
+        hint = -1
+        score -= getPoints (grid.reclaim())
         heartbeat++
     }
 
+    fun calcHint (depth:Int=0) {
+        hint = grid.calcHint (depth, ::getPoints)
+    }
+
+    fun getPoints (area:Int) = area * (area+1)
+
     private fun addPoints (expansion:Int) {
-        score += expansion * (expansion+1)
+        score += getPoints (expansion)
         if (hiScore < score)
             hiScore = score
         if (isBoardMonochrome && (loMoves !in 0..moves))
             loMoves = moves
+        hint = -1
         heartbeat++
     }
 
@@ -80,6 +104,7 @@ class GridGameViewModel() : ViewModel() {
         private const val LO_MOVES_KEY = "LO_MOVES"
         private const val DATA_KEY_PREFIX = "DATA_"
         private const val RANK_KEY_PREFIX = "RANK_"
+        private const val HINT_KEY = "HINT"
     }
 
     fun saveState (prefs:SharedPreferences) {
@@ -94,6 +119,7 @@ class GridGameViewModel() : ViewModel() {
             }
             remove (DATA_KEY_PREFIX+grid.ySize)
             putString (MOVES_KEY, grid.getMovesLine())
+            putInt (HINT_KEY, hint)
         }
     }
 
@@ -117,6 +143,7 @@ class GridGameViewModel() : ViewModel() {
                     rankLine.split(' ').map { it.toInt() })
             }
             grid.addMoves (prefs.getString (MOVES_KEY, ""))
+            hint = prefs.getInt (HINT_KEY, -1)
         }
         heartbeat++
     }

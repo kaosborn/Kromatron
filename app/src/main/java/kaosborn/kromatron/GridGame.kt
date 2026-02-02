@@ -21,7 +21,7 @@ class GridGame() {
     fun getDataLine (y:Int) = _data[y].joinToString(" ")
     fun getRankLine (y:Int) = _rank[y].joinToString(" ")
     fun getPaletteLine() = _palette.map { it.toArgb() }.joinToString(" ")
-    fun getMovesLine() = _moveStack.joinToString(" ") { it.colorIndex.toString() + " " + it.fillArea }
+    fun getMovesLine() = _moveStack.joinToString(" ") { "${it.colorIndex} ${it.fillArea}" }
 
     constructor (colors:List<Color>, boardValues:List<List<Int>>): this() {
         if (boardValues.isNotEmpty()) {
@@ -99,7 +99,7 @@ class GridGame() {
             monoArea = _moveStack[_moveStack.lastIndex].fillArea
             for ((y,r) in _rank.withIndex())
                 for (x in 0..<r.size)
-                     if (r[x] > monoArea)
+                    if (r[x] > monoArea)
                         r[x] = 0
                     else if (r[x] > 0)
                         _data[y][x] = colorIndex
@@ -120,6 +120,29 @@ class GridGame() {
                 else if (_data[y][x-1]==_data[y][x+1])
                     _data[y][x] = _data[y][x-1]
             }
+    }
+
+    fun calcHint (depth:Int, getPointsFromArea:(Int) -> Int): Int {
+        fun calcHintR (level:Int): Pair<Int,Int> {
+            var topPointT = -1
+            var topPoints = 0
+            var topIndex = 0
+            for (colorIndex in palette.indices)
+                if (colorIndex!=_data[0][0]) {
+                    val points = getPointsFromArea (flood4 (colorIndex))
+                    if (points!=0) {
+                        val pointT = if (isConstant || level==0) points else points + calcHintR(level-1).first
+                        if (topPointT < pointT || (topPointT == pointT && topPoints <= points)) {
+                            topPointT = pointT
+                            topPoints = points
+                            topIndex = colorIndex
+                        }
+                    }
+                    reclaim()
+                }
+            return Pair (topPointT, topIndex)
+        }
+        return if (isConstant) -1 else calcHintR(depth).second
     }
 
     fun flood4 (colorIndex:Int): Int {
