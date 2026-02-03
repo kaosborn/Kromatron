@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -65,16 +66,19 @@ fun AppScreen (vm:GridGameViewModel=viewModel()) {
                         Text (text="KROMATRON", style=typography.headlineMedium)
                     },
                     actions = {
-                        IconButton (onClick = { showSettings.value=true }) {
-                            Icon (Icons.Filled.Settings, "settings")
-                        }
+                        IconButton(
+                            onClick = { vm.calcHint (depth=vm.boardGauge) }) {
+                                Icon (Icons.Filled.AutoAwesome, "hint")
+                            }
+                        IconButton(
+                            onClick = { showSettings.value = true }) {
+                                Icon (Icons.Filled.Settings, "settings")
+                            }
                     },
                     colors = topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.background,
                         titleContentColor = MaterialTheme.colorScheme.onBackground,
-                        actionIconContentColor = MaterialTheme.colorScheme.onBackground
-                    )
-                )
+                        actionIconContentColor = MaterialTheme.colorScheme.onBackground))
             }
         ) {
             padVals ->

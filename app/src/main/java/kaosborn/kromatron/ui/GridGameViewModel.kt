@@ -24,25 +24,9 @@ class GridGameViewModel() : ViewModel() {
     val moves get() = grid.moveCount
     val boardWidth get() = grid.xSize
     val boardArea get() = grid.gridArea
-    val fillArea get() = grid.fillArea
+    val boardGauge get() = (14-palette.size-(boardWidth+2)/4).coerceAtLeast(2).coerceAtMost(5)
     val isBoardMonochrome get() = grid.isConstant
     val root get() = if (grid.isConstant) null else board[0][0]
-
-    val boardGauge:Int get() {
-        val openArea = boardArea - fillArea
-        return when (openArea * openArea * palette.size) {
-            in 1..350 -> 12
-            in 351..400 -> 11
-            in 401..450 -> 10
-            in 451..550 -> 9
-            in 551..700 -> 8
-            in 701..900 -> 7
-            in 901..1200 -> 6
-            in 1201..1500 -> 5
-            in 1501..2100 -> 4
-            else -> 3
-        }
-    }
 
     init {
         addPoints (grid.monoArea)
