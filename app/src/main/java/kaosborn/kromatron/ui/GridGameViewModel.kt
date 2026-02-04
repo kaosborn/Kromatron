@@ -102,7 +102,7 @@ class GridGameViewModel() : ViewModel() {
                 putString (RANK_KEY_PREFIX+y, grid.getRankLine(y))
             }
             remove (DATA_KEY_PREFIX+grid.ySize)
-            putString (MOVES_KEY, grid.getMovesLine())
+            putString (MOVES_KEY, grid.getMoveLines())
             putInt (HINT_KEY, hint)
         }
     }

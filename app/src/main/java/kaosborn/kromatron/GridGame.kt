@@ -13,15 +13,15 @@ class GridGame() {
     var fillArea = 0; private set
     var xSize = 0; private set
     val ySize get() = _data.size
-    val data get() = _data
-    val rank get() = _rank
-    val palette get() = _palette
+    val data:List<List<Int>> get() = _data
+    val rank:List<List<Int>> get() = _rank
+    val palette:List<Color> get() = _palette
     val moveCount get() = _moveStack.size
     val isConstant get() = monoArea==gridArea
     fun getDataLine (y:Int) = _data[y].joinToString(" ")
     fun getRankLine (y:Int) = _rank[y].joinToString(" ")
     fun getPaletteLine() = _palette.map { it.toArgb() }.joinToString(" ")
-    fun getMovesLine() = _moveStack.joinToString(" ") { "${it.colorIndex} ${it.fillArea}" }
+    fun getMoveLines() = _moveStack.joinToString(" ") { "${it.colorIndex} ${it.fillArea}" }
 
     constructor (colors:List<Color>, boardValues:List<List<Int>>): this() {
         if (boardValues.isNotEmpty()) {
@@ -92,22 +92,6 @@ class GridGame() {
         }
     }
 
-    fun reclaim(): Int {
-        val monoArea0 = monoArea
-        if (_moveStack.isNotEmpty()) {
-            val colorIndex = _moveStack[_moveStack.lastIndex].colorIndex
-            monoArea = _moveStack[_moveStack.lastIndex].fillArea
-            for ((y,r) in _rank.withIndex())
-                for (x in 0..<r.size)
-                    if (r[x] > monoArea)
-                        r[x] = 0
-                    else if (r[x] > 0)
-                        _data[y][x] = colorIndex
-            _moveStack.removeAt (_moveStack.lastIndex)
-        }
-        return monoArea0 - monoArea
-    }
-
     private fun addSalt() {
         if (ySize>2 && xSize>2)
             for (k in 1..(xSize-2)*(ySize-2)) {
@@ -143,6 +127,22 @@ class GridGame() {
             return Pair (topPointT, topIndex)
         }
         return if (isConstant) -1 else calcHintR(depth).second
+    }
+
+    fun reclaim(): Int {
+        val monoArea0 = monoArea
+        if (_moveStack.isNotEmpty()) {
+            val colorIndex = _moveStack[_moveStack.lastIndex].colorIndex
+            monoArea = _moveStack[_moveStack.lastIndex].fillArea
+            for ((y,r) in _rank.withIndex())
+                for (x in 0..<r.size)
+                    if (r[x] > monoArea)
+                        r[x] = 0
+                    else if (r[x] > 0)
+                        _data[y][x] = colorIndex
+            _moveStack.removeAt (_moveStack.lastIndex)
+        }
+        return monoArea0 - monoArea
     }
 
     fun flood4 (colorIndex:Int): Int {
