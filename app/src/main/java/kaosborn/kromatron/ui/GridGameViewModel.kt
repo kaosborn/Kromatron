@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel
 import kaosborn.kromatron.GridGame
 import kaosborn.kromatron.ui.theme.*
 
-class GridGameViewModel() : ViewModel() {
+class GridGameViewModel : ViewModel() {
     val baseColors = listOf(Crimson,RoyalBlue,LimeGreen,Cyan,Gold,MediumVioletRed,Brown)
     private var grid = GridGame (baseColors.subList(0,5), 5, 5)
     var score by mutableIntStateOf (0); private set
@@ -102,7 +102,7 @@ class GridGameViewModel() : ViewModel() {
                 putString (RANK_KEY_PREFIX+y, grid.getRankLine(y))
             }
             remove (DATA_KEY_PREFIX+grid.ySize)
-            putString (MOVES_KEY, grid.getMoveLines())
+            putString (MOVES_KEY, grid.getMoveHistoryLine())
             putInt (HINT_KEY, hint)
         }
     }

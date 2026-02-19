@@ -21,7 +21,7 @@ class GridGame() {
     fun getDataLine (y:Int) = _data[y].joinToString(" ")
     fun getRankLine (y:Int) = _rank[y].joinToString(" ")
     fun getPaletteLine() = _palette.map { it.toArgb() }.joinToString(" ")
-    fun getMoveLines() = _moveStack.joinToString(" ") { "${it.colorIndex} ${it.fillArea}" }
+    fun getMoveHistoryLine() = _moveStack.joinToString(" ") { "${it.colorIndex} ${it.fillArea}" }
 
     constructor (colors:List<Color>, boardValues:List<List<Int>>): this() {
         if (boardValues.isNotEmpty()) {
@@ -202,7 +202,7 @@ class GridGame() {
 
     override fun toString(): String {
         var result = ""
-        _data.forEachIndexed { y, r ->
+        _data.forEachIndexed { y,r ->
             if (y>0)
                 result += "\n"
             result += r.joinToString (" ")
